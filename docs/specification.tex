@@ -19,6 +19,7 @@
 \usepackage{enumitem}   
 \usepackage{fancyvrb}
 \usepackage{todonotes}
+\usepackage{multirow}
 
 % This will set LaTeX to look for figures in the same directory as the .tex file
 \graphicspath{.} % The dot means current directory.
@@ -52,37 +53,111 @@
 
 % Edit below as instructed
 
-\title{SnappyLanguageName Language Specification} % Replace SnappyLanguageName with your project's name
+\title{Mobile Order Meal Generator} % Replace SnappyLanguageName with your project's name
 
-\author{Partner One \and Parnter Two} % Replace these with real partner names.
+\author{Maddy Andersen \and Stella Oh}
 
 \begin{document}
   
 \maketitle
 
 \subsection*{Introduction}
+\textit{What problem does your language solve? What makes you think that this
+problem should have its own programming language?}
 
-\todo[inline]{Delete this TODO and replace with 2+ paragraphs.}
+~\\
+While Williams has multiple dining halls, sometimes it can be more convenient to instead order from one of the three mobile ordering options: Lee Snack Bar, '82 Grill, or Fresh n Go. But with this added convenience comes a daunting question: what exactly should you order? Each of the three has an extensive menu, with each of the options on the menu giving the opportunity for further customization. Because there are so many choices, ordering can be overwhelming. Many people — ourselves included — stick to ordering the same meals again and again as a result. Even worse, some people don't mobile order at all and instead go to one of the dining halls, feeling that a mediocre meal is better than having to make the decision about what to mobile order. 
+
+~\\
+In an effort to help out indecisive individuals and those experiencing decision fatigue, our language generates a possible mobile order, following given specifications from the user about what day of the week it is, as well as about what kind of meal they are looking for. Designed for students who are already familiar with the three menus, our language will help users mix up their order and find new options. It will also hopefully re-inspire students to mobile order their meals if they are unhappy with the dining hall options. Because our language is (ideally) easy to use, using our language to generate a meal will be less burdensome — and more fun! — for a user than determining what to order on their own.
 
 \subsection*{Design Principles}
-
-\todo[inline]{Delete this TODO and replace with 1+ paragraphs.}
+\textit{Languages can solve problems in many ways. What are the aesthetic or
+technical ideas that guide its design?}
+\\\\
+This language is designed with simplicity and convenience in mind. It is tailored for the typical Williams Eph, who is already familiar with the types of mobile ordering meals available (they know '82 Grill serves only lunch, dinner, and late-night, for example), but are looking to switch up what they order. Because this language is intended to be an alternative to the overwhelming task of deciding what to mobile order, it aims to be as straight-forward and stress-free as possible. 
 
 \subsection*{Examples}
+\textit{Keeping in mind that your syntax is still informal, sketch out 3 or more sample programs in your language.}
 
-\todo[inline]{Delete this TODO and replace with 3+ examples and accompanying descriptions.}
+\begin{verbatim}
+   monday breakfast
+\end{verbatim}
+
+\begin{verbatim}
+   thursday dinner
+   friday late night
+\end{verbatim}
+
+\begin{verbatim}
+   wednesday mid day
+   sunday dinner
+   monday dinner
+\end{verbatim}
+
+Currently, our interpreter prettyprints the input if the program is valid (in our language).
 
 \subsection*{Language Concepts}
-
-\todo[inline]{Delete this TODO and replace with 1+ paragraphs.}
+\textit{What are the core concepts a user needs to understand in order to write
+programs? Think in terms of both “primitives” and “combining forms.” What are the key ideas and how are they combined?}
+\\\\
+The user will need to be familiar with the components that go into an order (combining form), which are the day of the week and type of meal (primitives). To submit their request (which consists of one or more orders and is another combining form), the user will have to write their order(s) in a text-file, which they can then give to the language. The user will have to know the format of each order ($<$day$>$ $<$meal$>$) to submit a valid request. They will also have to know that each order should begin on a new line. Finally, a user needs to have some familiarity with the three mobile ordering options on campus, as well as a general sense of their menus, to be able to use this language easily.
 
 \subsection*{Formal Syntax}
-
-\todo[inline]{Delete this TODO and replace with BNF.}
+\textit{Begin to describe your syntax formally, using BNF.}
+\\\\
+The following grammar is for a minimally working version of our language.
+\begin{verbatim}
+    <request> ::= <order> | <order> '\n' <request>
+    <order>   ::= <day>␣<meal>
+    <day>     ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
+    <meal>    ::= breakfast | lunch | mid day | dinner | late night
+\end{verbatim}
 
 \subsection*{Semantics}
+\textit{How is your program interpreted? This need not be formal yet, however, you should demonstrate that you’ve thought about how your program will be represented and evaluated on a computer.}
 
-\todo[inline]{Delete this TODO and replace with as much text as is needed.}
+\begin{enumerate}
+  \item What are the primitive kinds of values in your system? For example, a primitive might be a number, a string, a shape, or a sound. Every primitive should be an idea that a user can explicitly state in a program written in your language. \\
+
+    In our language, the primitive values are the day of the week and the meal. The day can be one of seven options: monday, tuesday, wednesday, thursday, friday, saturday, or sunday. The meal can be one of five options: breakfast, lunch, mid day, dinner, or late night.
+    
+  \item What are the combining forms in your language? In other words, how are values combined in a program? For example, your system might combine primitive “numbers” using an operation like “plus.” Or perhaps a user can arrange primitive “notes” within a “sequence.” \\
+
+    Our language has two combining forms. The first is an order, which is composed of a day and a meal. For example, 
+    \begin{verbatim}
+        monday breakfast
+    \end{verbatim}
+    is an order. The second is a request, which consists of one or more orders. So,
+    \begin{verbatim}
+        monday breakfast
+    \end{verbatim}
+    is thus also a request, while
+     \begin{verbatim}
+       thursday dinner
+       friday late night
+     \end{verbatim}
+    is a request too. 
+            
+  \item How is your program evaluated? In particular, 
+  
+  \begin{enumerate}
+      \item Do programs in your language read any input?
+      \item What is the effect (output) of evaluating a program? Does the language produce a file or print something to the screen? Use one of your example programs to illustrate what you expect as output.
+  \end{enumerate}
+
+  Our program reads in a text file containing the user's request (one or more orders). If the user does not provide a file, the program prints a usage message. If the file does not contain a valid request, the program prints "Invalid program." Otherwise — if the user provides a file with a valid request — our language currently prettyprints the given program. In the future, evaluating a program will output a random order that takes into account the user's specifications. 
+\end{enumerate}
+
+We saw that many of the sample projects from previous semesters had a table in their semantics section. We are leaving this here as a placeholder.
+\\\\
+\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{2cm}|p{3cm}| }
+ \hline
+ Syntax & Abstract Syntax & Type & Prec./Assoc. & Meaning\\
+ \hline
+ Placeholder   & Placeholder & Placeholder  & N/A & Placeholder\\
+ \hline
+\end{tabular}
 
 % DO NOT DELETE ANYTHING BELOW THIS LINE
 \end{document}
