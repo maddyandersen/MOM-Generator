@@ -4,10 +4,31 @@ open AST
 open Combinator
 
 (*
- *  <request> ::= <order> | <order> '\n' <request>
- *  <order>   ::= <day>␣<meal>
- *  <day>     ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
- *  <meal>    ::= breakfast | lunch | mid day | dinner | late night
+    <request>  ::= <order> | <order> '\n' <request>
+    <order>    ::= <day>␣<meal>␣<location>␣<category>
+    <day>      ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
+    <meal>     ::= breakfast | lunch | mid day | dinner | late night
+    <location> ::= lee | fng | 82grill | any
+    <category> ::= 
+        | <lee_breakfast_categories>
+        | <lee_midday_categories> 
+        | <lee_lunch_categories> 
+        | <lee_dinner_categories> 
+        | <fng_lunch_categories> 
+        | <82grill_lunch_categories>   
+        | <82grill_dinner_categories> 
+        | <82grill_latenight_categories>
+
+    <lee_breakfast_categories> ::= breakfast entrees | breakfast sandwiches
+    <lee_lunch_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
+    <lee_midday_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
+    <lee_dinner_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
+    
+    <fng_lunch_categories> ::= build your own | protein rich | GF
+
+    <82grill_lunch_categories> ::= create your own | GF| wings | specials
+    <82grill_dinner_categories> ::= create your own | GF | wings | specials
+    <82grill_latenight_categories> ::= create your own
  *)
 
 let pad p = pbetween pws0 p pws0
@@ -27,11 +48,21 @@ let meal =
     (pstr "dinner" |>> (fun _ -> Dinner))  <|>
     (pstr "late night" |>> (fun _ -> LateNight)) 
 
+let location =
+    (pstr "lee" |>> (fun _ -> Lee)) <|>
+    (pstr "fresh n go" |>> (fun _ -> FnG)) <|>
+    (pstr "82 grill" |>> (fun _ -> Grill)) <|>
+    (pstr "any" |>> (fun _ -> AnyLoc))    
+
+
 let order =
     pseq
-        (pleft day pws1)
-        (meal)
-        (fun (d, m) -> {day = d; meal = m})
+        (pseq
+            (pleft day pws1)
+            (pleft meal pws1)
+            (fun (d, m) -> (d, m)))
+        location
+        (fun ((d, m), l) -> { day = d; meal = m; location = l })  
 
 let request = pmany1 (pad order)
   

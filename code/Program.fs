@@ -20,7 +20,8 @@ let main argv : int =
     match ast_maybe with
     | Some ast ->
         let str = prettyprint ast
-        printfn "%s" str
+        let str2 = generateCategories ast
+        printfn "%s %s" str str2
         0
     | None     ->
         printfn "Invalid program."
