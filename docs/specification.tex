@@ -81,61 +81,85 @@ This language is designed with simplicity and convenience in mind. It is tailore
 \textit{Keeping in mind that your syntax is still informal, sketch out 3 or more sample programs in your language.}
 
 \begin{verbatim}
-   monday breakfast
+    tuesday lunch any
 \end{verbatim}
 
 \begin{verbatim}
-   thursday dinner
-   friday late night
+    friday dinner lee
 \end{verbatim}
 
 \begin{verbatim}
-   wednesday mid day
-   sunday dinner
-   monday dinner
+    monday dinner fresh n go
+    tuesday breakfast 82 grill
+    tuesday late night lee
 \end{verbatim}
 
-Currently, our interpreter prettyprints the input if the program is valid (in our language).
+Currently, our interpreter prettyprints the input and generates a random meal category from the given location for the given meal for each order. If the input is invalid — for example, it is not possible to order dinner from lee —  our interpreter does not generate a random meal category and gives the user a message to submit a new request that is valid.
 
 \subsection*{Language Concepts}
 \textit{What are the core concepts a user needs to understand in order to write
 programs? Think in terms of both “primitives” and “combining forms.” What are the key ideas and how are they combined?}
 \\\\
-The user will need to be familiar with the components that go into an order (combining form), which are the day of the week and type of meal (primitives). To submit their request (which consists of one or more orders and is another combining form), the user will have to write their order(s) in a text-file, which they can then give to the language. The user will have to know the format of each order ($<$day$>$ $<$meal$>$) to submit a valid request. They will also have to know that each order should begin on a new line. Finally, a user needs to have some familiarity with the three mobile ordering options on campus, as well as a general sense of their menus, to be able to use this language easily.
+The user will need to be familiar with the components that go into an order (combining form), which are the day of the week, the type of meal, and the location (primitives). To submit their request (which consists of one or more orders and is another combining form), the user will have to write their order(s) in a text-file, which they can then give to the language. The user will have to know the format of each order ($<$day$>$ $<$meal$>$ $<$location$>$) to submit a valid request. They will also have to know that each order should begin on a new line. Finally, a user needs to have some familiarity with the three mobile ordering options on campus, as well as a general sense of their menus, to be able to use this language easily.
 
 \subsection*{Formal Syntax}
 \textit{Begin to describe your syntax formally, using BNF.}
 \\\\
-The following grammar is for a minimally working version of our language.
+The following grammar is for a mostly working version of our language.
 \begin{verbatim}
-    <request> ::= <order> | <order> '\n' <request>
-    <order>   ::= <day>␣<meal>
-    <day>     ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
-    <meal>    ::= breakfast | lunch | mid day | dinner | late night
+    <request>  ::= <order> | <order> '\n' <request>
+    <order>    ::= <day>␣<meal>␣<location>␣<category>
+    <day>      ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
+    <meal>     ::= breakfast | lunch | mid day | dinner | late night
+    <location> ::= lee | fng | 82grill | any
+    <category> ::= 
+        | <lee_breakfast_categories>
+        | <lee_midday_categories> 
+        | <lee_lunch_categories> 
+        | <lee_dinner_categories> 
+        | <fng_lunch_categories> 
+        | <82grill_lunch_categories>   
+        | <82grill_dinner_categories> 
+        | <82grill_latenight_categories>
+
+    <lee_breakfast_categories> ::= breakfast entrees | breakfast sandwiches
+    <lee_lunch_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
+        GF burgers | GF hot sandwiches | salads | parfait | specials
+    <lee_midday_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
+        GF burgers | GF hot sandwiches | salads | parfait | specials
+    <lee_dinner_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
+        GF burgers | GF hot sandwiches | salads | parfait | specials
+    
+    <fng_lunch_categories> ::= build your own | protein rich | GF
+
+    <82grill_lunch_categories> ::= create your own | GF | wings | specials
+    <82grill_dinner_categories> ::= create your own | GF | wings | specials
+    <82grill_latenight_categories> ::= create your own
+ 
 \end{verbatim}
 
 \subsection*{Semantics}
-\textit{How is your program interpreted? This need not be formal yet, however, you should demonstrate that you’ve thought about how your program will be represented and evaluated on a computer.}
+\textit{How is your program interpreted? This need not be formal yet, however, you should demonstrate that you've thought about how your program will be represented and evaluated on a computer.}
 
 \begin{enumerate}
   \item What are the primitive kinds of values in your system? For example, a primitive might be a number, a string, a shape, or a sound. Every primitive should be an idea that a user can explicitly state in a program written in your language. \\
 
-    In our language, the primitive values are the day of the week and the meal. The day can be one of seven options: monday, tuesday, wednesday, thursday, friday, saturday, or sunday. The meal can be one of five options: breakfast, lunch, mid day, dinner, or late night.
+    In our language, the primitive values are the day of the week, meal, and location. The day can be one of seven options: monday, tuesday, wednesday, thursday, friday, saturday, or sunday. The meal can be one of five options: breakfast, lunch, mid day, dinner, or late night. The location can be one of four options: lee, fresh n go, 82 grill, or any location.
     
   \item What are the combining forms in your language? In other words, how are values combined in a program? For example, your system might combine primitive “numbers” using an operation like “plus.” Or perhaps a user can arrange primitive “notes” within a “sequence.” \\
 
-    Our language has two combining forms. The first is an order, which is composed of a day and a meal. For example, 
+    Our language has two combining forms. The first is an order, which is composed of a day, meal, and a location. For example, 
     \begin{verbatim}
-        monday breakfast
+        monday breakfast lee
     \end{verbatim}
     is an order. The second is a request, which consists of one or more orders. So,
     \begin{verbatim}
-        monday breakfast
+        monday breakfast lee
     \end{verbatim}
     is thus also a request, while
      \begin{verbatim}
-       thursday dinner
-       friday late night
+       monday breakfast lee
+       friday late night 82 grill
      \end{verbatim}
     is a request too. 
             
@@ -146,16 +170,16 @@ The following grammar is for a minimally working version of our language.
       \item What is the effect (output) of evaluating a program? Does the language produce a file or print something to the screen? Use one of your example programs to illustrate what you expect as output.
   \end{enumerate}
 
-  Our program reads in a text file containing the user's request (one or more orders). If the user does not provide a file, the program prints a usage message. If the file does not contain a valid request, the program prints "Invalid program." Otherwise — if the user provides a file with a valid request — our language currently prettyprints the given program. In the future, evaluating a program will output a random order that takes into account the user's specifications. 
+  Our program reads in a text file containing the user's request (one or more orders). If the user does not provide a file, the program prints a usage message. If the file does not contain a valid request, the program prints "Invalid program." Otherwise — if the user provides a file with a valid request — our language currently prettyprints the input and generates a random category from the given location for the given meal for each order in the request. In the future, evaluating a program will output a random order (from that category) that takes into account the user's specifications. 
 \end{enumerate}
 
-We saw that many of the sample projects from previous semesters had a table in their semantics section. We are leaving this here as a placeholder.
-\\\\
-\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{2cm}|p{3cm}| }
+\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{6cm}| }
  \hline
- Syntax & Abstract Syntax & Type & Prec./Assoc. & Meaning\\
+ Syntax & Abstract Syntax & Prec./Assoc. & Meaning\\
  \hline
- Placeholder   & Placeholder & Placeholder  & N/A & Placeholder\\
+ $<$meal$>$   & Discriminated Union & n/a & \textit{meal} is a primitive that represents a specific meal of the day (breakfast, lunch, mid day, dinner, late night). To prettyprint a meal, the given meal is turned into a string.\\
+ \hline
+ $<$order$>$ & Record & n/a & \textit{order} is a combining form. It has three elements: the day (of type \textit{day}), the meal (of type \textit{meal}), and the location (of type \textit{location}). This allows us to store all three of these pieces of information together. \\
  \hline
 \end{tabular}
 

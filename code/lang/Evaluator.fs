@@ -79,7 +79,7 @@ let generateCategoriesHelper(o: Order) : string =
         sprintf "\nRandom category from Lee midday: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"])
     | Dinner, Lee ->  
         sprintf "\nRandom category from Lee dinner: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"])
-    | LateNight, Lee ->
+    | LateNight, Lee -> 
         sprintf "Lee does not have late night. Please request a new order."
     | Lunch, FnG ->  
         sprintf "\nRandom category from Fresh n Go lunch: %s" (getRandomCategory ["build your own"; "protein rich"; "GF"])
