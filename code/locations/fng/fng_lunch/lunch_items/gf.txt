@@ -1,0 +1,3 @@
+deli sandwich: GF
+salad: GF
+grain bowl: GF
