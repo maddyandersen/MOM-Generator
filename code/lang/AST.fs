@@ -22,17 +22,6 @@ type Location =
 | Grill
 | AnyLoc
 
-type Category =
-| LeeBreakfast of string
-| LeeLunch of string
-| LeeMidDay of string
-| LeeDinner of string
-| FnGLunch of string
-| GrillLunch of string
-| GrillDinner of string
-| GrillLateNight of string
-| AnyCat
-
-type Order = {day: Day; meal: Meal; location: Location}
+type Order = {day: Day; meal: Meal; location: Location; category: string}
 
 type Request = Order list

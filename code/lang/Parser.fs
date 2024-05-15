@@ -3,6 +3,8 @@ module Parser
 open AST
 open Combinator
 
+open System.IO
+
 (*
 <request>  ::= <order> | <order> '\n' <request>
 <order>    ::= <day>␣<meal>␣<location>␣<category>
@@ -52,16 +54,32 @@ let location =
     (pstr "lee" |>> (fun _ -> Lee)) <|>
     (pstr "fresh n go" |>> (fun _ -> FnG)) <|>
     (pstr "82 grill" |>> (fun _ -> Grill)) <|>
-    (pstr "any" |>> (fun _ -> AnyLoc))    
+    (pstr "any" |>> (fun _ -> AnyLoc))   
 
+// read lines from file
+// create parser for each line
+// fold all parsers together
+let createParserFromFile (filePath : string) =
+    let lines = File.ReadAllLines(filePath) |> List.ofArray
+    match lines with
+    | [] -> failwith "File is empty"
+    | firstLine::remainingLines ->
+        List.map (fun x -> pstr x) remainingLines 
+        |> List.fold (fun acc p -> acc <|> p) (pstr firstLine)
+   
+
+let category = createParserFromFile("../locations/all/all_categories.txt") 
 let order =
     pseq
         (pseq
-            (pleft day pws1)
-            (pleft meal pws1)
-            (fun (d, m) -> (d, m)))
-        location
-        (fun ((d, m), l) -> { day = d; meal = m; location = l })  
+            (pseq
+                (pleft day pws1)
+                (pleft meal pws1)
+                (fun (d, m) -> (d, m)))
+            (pleft location pws1)
+            (fun ((d, m), l) -> (d, m, l)))
+        category
+        (fun ((d, m, l), c) -> {day = d; meal = m; location = l; category = c})
 
 let request = pmany1 (pad order)
   

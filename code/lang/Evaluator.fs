@@ -37,12 +37,12 @@ let rec prettyprint(rs: Request) : string =
         let prettyday = dayprint r.day
         let prettymeal = mealprint r.meal
         let prettylocation = locprint r.location
-        sprintf "%s %s %s" prettyday prettymeal prettylocation
+        sprintf "%s %s %s %s" prettyday prettymeal prettylocation r.category
     | r::rs2 -> 
         let prettyday = dayprint r.day
         let prettymeal = mealprint r.meal
         let prettylocation = locprint r.location
-        printfn "%s %s %s" prettyday prettymeal prettylocation     
+        printfn "%s %s %s %s" prettyday prettymeal prettylocation r.category 
         prettyprint rs2  
 (*
 // update this to select category at random
