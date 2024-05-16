@@ -98,7 +98,8 @@ let request = pmany1 (pad order)
 let grammar = pleft request peof
 
 let parse (input: string) : Request option =
-    let i = prepare input
+    let inputLower = input.ToLower()
+    let i = prepare inputLower
     match grammar i with
     | Success(ast, _) -> Some ast
     | Failure(_,_) -> None
