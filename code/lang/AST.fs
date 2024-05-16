@@ -22,6 +22,12 @@ type Location =
 | Grill
 | AnyLoc
 
-type Order = {day: Day; meal: Meal; location: Location; category: string}
+type Order = {
+    day: Day; 
+    meal: Meal; 
+    location: Location; 
+    category: string; 
+    item: string
+}
 
 type Request = Order list

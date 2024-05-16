@@ -19,9 +19,8 @@ let main argv : int =
     (* try to evaluate what we parsed... or not *)
     match ast_maybe with
     | Some ast ->
-        let str = prettyprint ast
-        let str2 = generateCategories ast
-        printfn "%s %s" str str2
+        let str = eval ast
+        printfn "%s" str 
         0
     | None     ->
         printfn "Invalid program."

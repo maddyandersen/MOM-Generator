@@ -34,6 +34,13 @@ open System.IO
 *)
 
 let pad p = pbetween pws0 p pws0
+
+let pwsc = 
+    pseq 
+        (pchar ',')
+        pws1
+        (fun _ -> ())
+
 let day =
     (pstr "monday" |>> (fun _ -> Monday)) <|>
     (pstr "tuesday" |>> (fun _ -> Tuesday)) <|>
@@ -69,17 +76,22 @@ let createParserFromFile (filePath : string) =
    
 
 let category = createParserFromFile("../locations/all/all_categories.txt") 
+
+let items = createParserFromFile("../locations/all/all_items.txt")
 let order =
     pseq
         (pseq
             (pseq
-                (pleft day pws1)
-                (pleft meal pws1)
-                (fun (d, m) -> (d, m)))
-            (pleft location pws1)
-            (fun ((d, m), l) -> (d, m, l)))
-        category
-        (fun ((d, m, l), c) -> {day = d; meal = m; location = l; category = c})
+                (pseq
+                    (pleft day pwsc)
+                    (pleft meal pwsc)
+                    (fun (d, m) -> (d, m)))
+                (pleft location pwsc)
+                (fun ((d, m), l) -> (d, m, l)))
+            (pleft category pwsc)
+            (fun ((d, m, l), c) -> (d, m, l, c)))
+        items
+        (fun ((d, m, l, c), i) -> {day = d; meal = m; location = l; category = c; item = i})
 
 let request = pmany1 (pad order)
   

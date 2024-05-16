@@ -2,6 +2,7 @@ module Evaluator
 
 open AST
 open System
+open System.IO
 
 let dayprint(d: Day) : string =
     match d with
@@ -28,95 +29,168 @@ let locprint(l: Location) : string =
     | Grill -> "82 Grill"
     | AnyLoc -> "Any Location"
 
-let rec prettyprint(rs: Request) : string =
-    match rs with
-    | [] ->
-        printfn "Please include at least one order of type <day> <meal> <location>."
-        exit 1
-    | [r] -> 
-        let prettyday = dayprint r.day
-        let prettymeal = mealprint r.meal
-        let prettylocation = locprint r.location
-        sprintf "%s %s %s %s" prettyday prettymeal prettylocation r.category
-    | r::rs2 -> 
-        let prettyday = dayprint r.day
-        let prettymeal = mealprint r.meal
-        let prettylocation = locprint r.location
-        printfn "%s %s %s %s" prettyday prettymeal prettylocation r.category 
-        prettyprint rs2  
-(*
-// update this to select category at random
-let generateCategoriesHelper(o: Order) : string =
-    match o.meal, o.location with 
-    | Breakfast, Lee -> "\nrandom category from lee breakfast"
-    | Lunch, Lee ->  "\nrandom category from lee lunch"
-    | MidDay, Lee ->  "\nrandom category from lee mid day"
-    | Dinner, Lee ->  "\nrandom category from lee dinner"
-    | Lunch, FnG ->  "\nrandom category from fresh n go lunch"
-    | Lunch, Grill ->  "\nrandom category from 82 grill lunch"
-    | Dinner, Grill ->  "\nrandom category from 82 grill dinner"
-    | LateNight, Grill -> "\nrandom category from 82 grill late night"
-    | Breakfast, AnyLoc -> "\nrandom category from any breakfast"
-    | Lunch, AnyLoc -> "\nrandom category from any lunch"
-    | MidDay, AnyLoc -> "\nrandom category from any midday"
-    | Dinner, AnyLoc -> "\nrandom category from any dinner"
-    | LateNight, AnyLoc -> "\nrandom category from any latenight"
-    | _, _ -> failwith "Location not available for given meal"
-*)
+let filePathHelperMeal(m: Meal) : string = 
+    match m with
+    | Breakfast -> "breakfast"
+    | Lunch -> "lunch"
+    | MidDay -> "midday"
+    | Dinner -> "dinner"
+    | LateNight -> "latenight"
 
-let generateCategoriesHelper(o: Order) : string =
+let filePathHelperLocation(l: Location) : string = 
+    match l with
+    | Lee -> "lee"
+    | FnG -> "fng"
+    | Grill -> "82grill"
+    | _ -> failwith "not a valid location"
+
+
+let filePathHelperCategory(c : string) : string =
+    // can probably rename files in such a way that this is unnecessary
+    // then would have something like:
+    (* let updatedC = c.Replace(" ", "").ToLower()
+    updatedC *)
+    match c with 
+    | "breakfast entrees" -> "entrees"
+    | "breakfast sandwiches" -> "sandwiches"
+    | "burgers" -> "burgers"
+    | "hot sandwiches" -> "hot_sandwiches"
+    | "GF burgers" -> "gf_burgers"
+    | "GF hot sandwiches" -> "gf_hot_sandwiches"
+    | "salads" -> "entree_salads"
+    | "parfait" -> "parfait"
+    | "specials" -> "specials"
+    | "build your own" -> "byo"
+    | "protein rich" -> "pr"
+    | "GF" -> "gf"
+    | "create your own" -> "cyo"
+    | "wings" -> "wings"
+    | "any" -> "any"
+    | _ -> failwith "not a valid category"
+
+let loadDayMealConstraintsFromFile(filePath: string) =
+    let constraints = File.ReadAllLines(filePath) |> List.ofArray
+    List.map (fun (line : string) ->
+        match line.Split(',') with
+        | [|loc; day; meal|] ->
+            let loc' =
+                match loc.ToLower().Trim() with
+                | "lee" -> Lee
+                | "fresh n go" -> FnG
+                | "82 grill" -> Grill
+                | _ -> failwith "Invalid location"
+
+            let day' =
+                match day.ToLower().Trim() with
+                | "monday" -> Monday
+                | "tuesday" -> Tuesday
+                | "wednesday" -> Wednesday
+                | "thursday" -> Thursday
+                | "friday" -> Friday
+                | "saturday" -> Saturday
+                | "sunday" -> Sunday
+                | _ -> failwith $"Invalid day: {day}"
+
+            let meal' =
+                match meal.ToLower().Trim() with
+                | "breakfast" -> Breakfast
+                | "lunch" -> Lunch
+                | "midday" -> MidDay
+                | "dinner" -> Dinner
+                | "latenight" -> LateNight
+                | _ -> failwith $"Invalid meal: {meal}"
+
+            (loc', day', meal')
+        | _ -> failwith "Invalid format in constraints file"
+    ) constraints
+
+let dayMealConstraints = loadDayMealConstraintsFromFile("../constraints/constraints.txt") 
+let checkDayMealConstraints(order: Order) : bool =
+    List.exists (fun (loc, day, meal) -> loc = order.location && day = order.day && meal = order.meal) dayMealConstraints
+
+let getCategories(o: Order) =
+    let filePath = 
+        "../locations/" + 
+        filePathHelperLocation(o.location) + "/" + 
+        filePathHelperLocation(o.location) + "_" + 
+        filePathHelperMeal(o.meal) + "/" + 
+        filePathHelperMeal(o.meal) + "_categories.txt"
+    let categories = File.ReadAllLines(filePath) |> List.ofArray
+    categories
+
+let getItems(o: Order) =
+    let filePath = 
+        "../locations/" + 
+        filePathHelperLocation(o.location) + "/" + 
+        filePathHelperLocation(o.location) + "_" + 
+        filePathHelperMeal(o.meal) + "/" + 
+        filePathHelperMeal(o.meal) + "_items/" + filePathHelperCategory(o.category) + ".txt"
+    let items = File.ReadAllLines(filePath) |> List.ofArray
+    items
+
+let validateCategory(o: Order) : bool =
+    let categories = getCategories(o)
+    List.exists (fun category -> category = o.category) categories
+
+let validateItem(o: Order) : bool =
+    let items = getItems(o)
+    List.exists (fun item -> item = o.item) items
+
+let rec generateCategory(o: Order) =
     let random = new Random()
-    let getRandomCategory categories =
-        let index = random.Next(0, List.length categories)
-        List.item index categories
+    let categories = getCategories(o)
+    let index = random.Next(0, List.length categories)
+    let category = List.item index categories
+    category
 
-    match o.meal, o.location with 
-    | Breakfast, Lee -> 
-        sprintf "\nRandom category from Lee breakfast: %s" (getRandomCategory ["breakfast entrees"; "breakfast sandwiches"])
-    | Lunch, Lee ->  
-        sprintf "\nRandom category from Lee lunch: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"])
-    | MidDay, Lee ->  
-        sprintf "\nRandom category from Lee midday: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"])
-    | Dinner, Lee ->  
-        sprintf "\nRandom category from Lee dinner: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"])
-    | LateNight, Lee -> 
-        sprintf "Lee does not have late night. Please request a new order."
-    | Lunch, FnG ->  
-        sprintf "\nRandom category from Fresh n Go lunch: %s" (getRandomCategory ["build your own"; "protein rich"; "GF"])
-    | Breakfast, FnG -> 
-        sprintf "Fresh n Go does not have breakfast. Please request a new order"
-    | Dinner, FnG ->
-        sprintf "Fresh n Go does not have dinner. Please request a new order."
-    | MidDay, FnG ->
-        sprintf "Fresh n Go does not have mid day. Please request a new order."
-    | LateNight, FnG ->
-        sprintf "Fresh n Go does not have late night. Please request a new order."
-    | Breakfast, Grill -> 
-        sprintf "82 Grill does not have breakfast. Please request a new order"
-    | Lunch, Grill ->  
-        sprintf "\nRandom category from 82 Grill lunch: %s" (getRandomCategory ["create your own"; "GF"; "wings"; "specials"])
-    | Dinner, Grill ->  
-        sprintf "\nRandom category from 82 Grill dinner: %s" (getRandomCategory ["create your own"; "GF"; "wings"; "specials"])
-    | LateNight, Grill -> 
-        sprintf "\nRandom category from 82 Grill late night: %s" (getRandomCategory ["create your own"])
-    | Breakfast, AnyLoc ->  
-        sprintf "\nRandom category from any breakfast: %s" (getRandomCategory ["breakfast entrees"; "breakfast sandwiches"])
-    | Lunch, AnyLoc ->  
-        sprintf "\nRandom category from any lunch: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"; "build your own"; "protein rich"; "GF"; "create your own"; "wings"; "specials"])
-    | MidDay, AnyLoc ->  
-        sprintf "\nRandom category from any midday: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"; "build your own"; "protein rich"; "GF"; "create your own"; "wings"; "specials"])
-    | Dinner, AnyLoc ->  
-        sprintf "\nRandom category from any dinner: %s" (getRandomCategory ["burgers"; "hot sandwiches"; "breakfast sandwiches"; "GF burgers"; "GF hot sandwiches"; "salads"; "parfait"; "specials"; "create your own"; "GF"; "wings"; "specials"])
-    | LateNight, AnyLoc ->  
-        sprintf "\nRandom category from any late night: %s" (getRandomCategory ["create your own"])
-    | _, _ -> failwith "Location not available for given meal"
-let rec generateCategories(rs: Request) : string =
+let rec generateItem(o : Order) = 
+    let random = new Random()
+    let items = getItems(o)
+    let index = random.Next(0, List.length items)
+    let item = List.item index items
+    item
+    
+let updateCategory newCategory order = { order with category = newCategory }
+
+let evalHelper(r: Order) =
+    if (checkDayMealConstraints r) then
+        if (r.category = "any") then 
+            let cat = generateCategory r
+            let rUpdated = updateCategory cat r
+            
+            if (rUpdated.item <> "any") then
+                sprintf "Item cannot be specified if category is not specified."
+            else
+                let item = generateItem rUpdated
+                let prettyday = dayprint r.day
+                let prettymeal = mealprint r.meal
+                let prettylocation = locprint r.location
+                sprintf "For %s at %s on %s, we recommend %s from the %s category." prettymeal prettylocation prettyday item rUpdated.category
+        elif (validateCategory r) then
+            if (r.item = "any") then
+                let item = generateItem r
+                let prettyday = dayprint r.day
+                let prettymeal = mealprint r.meal
+                let prettylocation = locprint r.location
+                sprintf "For %s at %s on %s from the %s category, we recommend %s." prettymeal prettylocation prettyday r.category item
+            elif (validateItem r) then
+                let prettyday = dayprint r.day
+                let prettymeal = mealprint r.meal
+                let prettylocation = locprint r.location
+                sprintf "%s from the %s category for %s at %s on %s is a great choice!" r.item r.category prettymeal prettylocation prettyday
+            else 
+                sprintf "Given item is not in given category."
+        else 
+            sprintf "Given category does not exist for given meal for given location."
+    else
+        sprintf "Given location is not open for given day or meal."
+let rec eval(rs: Request) : string =
     match rs with
     | [] ->
-        printfn "Please include at least one order of type <day> <meal> <location>."
+        printfn "Please include at least one order of type <day> <meal> <location> <category> <item>."
         exit 1
     | [r] -> 
-        sprintf "%s" (generateCategoriesHelper(r))
+        evalHelper(r)
     | r::rs2 -> 
-        printfn "%s" (generateCategoriesHelper(r))
-        generateCategories rs2
+        printfn "%s" (evalHelper(r))
+        eval rs2

@@ -1,2 +1,3 @@
-monday breakfast lee breakfast sandwiches
-tuesday lunch 82 grill GF
+sunday, lunch, 82 grill, any, any
+monday, breakfast, lee, breakfast sandwiches, any
+monday, lunch, 82 grill, any, any

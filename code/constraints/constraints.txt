@@ -1,0 +1,40 @@
+Lee, Monday, Breakfast
+Lee, Monday, Lunch 
+Lee, Monday, MidDay
+Lee, Monday, Dinner
+Lee, Tuesday, Breakfast
+Lee, Tuesday, Lunch 
+Lee, Tuesday, MidDay
+Lee, Tuesday, Dinner
+Lee, Wednesday, Breakfast
+Lee, Wednesday, Lunch 
+Lee, Wednesday, MidDay
+Lee, Wednesday, Dinner
+Lee, Thursday, Breakfast
+Lee, Thursday, Lunch 
+Lee, Thursday, MidDay
+Lee, Thursday, Dinner
+Lee, Friday, Breakfast
+Lee, Friday, Lunch 
+Lee, Friday, MidDay
+Lee, Friday, Dinner
+Fresh n Go, Monday, Lunch
+Fresh n Go, Tuesday, Lunch
+Fresh n Go, Wednesday, Lunch
+Fresh n Go, Thursday, Lunch
+Fresh n Go, Friday, Lunch
+82 Grill, Monday, Lunch
+82 Grill, Tuesday, Lunch
+82 Grill, Wednesday, Lunch 
+82 Grill, Wednesday, Dinner
+82 Grill, Wednesday, LateNight
+82 Grill, Thursday, Lunch
+82 Grill, Thursday, Dinner
+82 Grill, Thursday, LateNight
+82 Grill, Friday, Lunch
+82 Grill, Friday, Dinner
+82 Grill, Friday, LateNight
+82 Grill, Saturday, Dinner
+82 Grill, Saturday, LateNight
+82 Grill, Sunday, Dinner 
+82 Grill, Sunday, LateNight
