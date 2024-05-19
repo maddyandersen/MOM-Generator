@@ -2,7 +2,6 @@ module Parser
 
 open AST
 open Combinator
-
 open System.IO
 
 (*
@@ -63,6 +62,10 @@ let location =
     (pstr "82 grill" |>> (fun _ -> Grill)) <|>
     (pstr "any" |>> (fun _ -> AnyLoc))   
 
+let glutenFree =
+    (pstr ", gluten free" |>> (fun _ -> True)) <|>
+    (pstr "" |>> (fun _ -> False))
+
 // read lines from file
 // create parser for each line
 // fold all parsers together
@@ -94,7 +97,7 @@ let order =
                 (fun ((d, m, l), c) -> (d, m, l, c)))
             (pleft items pws0)
             (fun ((d, m, l, c), i) -> (d, m, l, c, i)))
-        (opt (pstr "gluten free") |>> Option.isSome)
+        (pleft glutenFree pws0)
         (fun ((d, m, l, c, i), gf) -> {day = d; meal = m; location = l; category = c; item = i; isGlutenFree = gf})
 
 

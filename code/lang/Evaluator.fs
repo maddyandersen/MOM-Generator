@@ -129,8 +129,8 @@ let getCategories(o: Order) : string list =
         filePathHelperMeal(o.meal) + "/" + 
         filePathHelperMeal(o.meal) + "_categories.txt"
     let categories = File.ReadAllLines(filePath) |> List.ofArray
-    if o.isGlutenFree then
-        List.filter (fun c -> c.Contains("gf")) categories
+    if o.isGlutenFree = True then
+        List.filter (fun c -> c.Contains("GF")) categories
     else
         categories
 
@@ -142,8 +142,8 @@ let getItems(o: Order) : string list =
         filePathHelperMeal(o.meal) + "/" + 
         filePathHelperMeal(o.meal) + "_items/" + filePathHelperCategory(o.category) + ".txt"
     let items = File.ReadAllLines(filePath) |> List.ofArray
-    if o.isGlutenFree then
-        List.filter (fun i -> i.Contains("gf")) items
+    if o.isGlutenFree = True then
+        List.filter (fun i -> i.Contains("GF")) items
     else
         items
 
@@ -188,59 +188,68 @@ let generateItem(o : Order) =
     item
     
 let updateCategory newCategory order = { order with category = newCategory }
-let evalHelper(r: Order) =
-    if (validateDayMeal r) then
-        if (r.location = AnyLoc) then 
-            let rUpdated = generateLocation r
-            
-            if (rUpdated.category <> "any") then
-                sprintf "Category cannot be specified if location is not specified."
-            else
-                let cat = generateCategory rUpdated
-                let rUpdated2 = updateCategory cat rUpdated
-                
-                if (rUpdated2.item <> "any") then
-                    sprintf "Item cannot be specified if category is not specified."
-                else
-                    let item = generateItem rUpdated2
-                    let prettyday = dayprint rUpdated2.day
-                    let prettymeal = mealprint rUpdated2.meal
-                    let prettylocation = locprint rUpdated2.location
-                    sprintf "For %s on %s, we recommend %s from the %s category at %s." prettymeal prettyday item rUpdated2.category prettylocation
 
-        elif (validateDayMealLocation r) then
-            if (r.category = "any") then 
-                let cat = generateCategory r
-                let rUpdated = updateCategory cat r
+let validateGlutenFree(o: Order) : bool =
+    match o.isGlutenFree with
+    | True -> true
+    | False -> true
+    | _ -> failwith "not a valid input"
+
+let evalHelper(r: Order) =
+    if not (validateGlutenFree r) then
+            sprintf "Please specify gluten free or type nothing."
+    elif (validateDayMeal r) then
+            if (r.location = AnyLoc) then 
+                let rUpdated = generateLocation r
                 
-                if (rUpdated.item <> "any") then
-                    sprintf "Item cannot be specified if category is not specified."
+                if (rUpdated.category <> "any") then
+                    sprintf "Category cannot be specified if location is not specified."
                 else
-                    let item = generateItem rUpdated
-                    let prettyday = dayprint r.day
-                    let prettymeal = mealprint r.meal
-                    let prettylocation = locprint r.location
-                    sprintf "For %s at %s on %s, we recommend %s from the %s category." prettymeal prettylocation prettyday item rUpdated.category
-            elif (validateCategory r) then
-                if (r.item = "any") then
-                    let item = generateItem r
-                    let prettyday = dayprint r.day
-                    let prettymeal = mealprint r.meal
-                    let prettylocation = locprint r.location
-                    sprintf "For %s at %s on %s from the %s category, we recommend %s." prettymeal prettylocation prettyday r.category item
-                elif (validateItem r) then
-                    let prettyday = dayprint r.day
-                    let prettymeal = mealprint r.meal
-                    let prettylocation = locprint r.location
-                    sprintf "%s from the %s category for %s at %s on %s is a great choice!" r.item r.category prettymeal prettylocation prettyday
+                    let cat = generateCategory rUpdated
+                    let rUpdated2 = updateCategory cat rUpdated
+                    
+                    if (rUpdated2.item <> "any") then
+                        sprintf "Item cannot be specified if category is not specified."
+                    else
+                        let item = generateItem rUpdated2
+                        let prettyday = dayprint rUpdated2.day
+                        let prettymeal = mealprint rUpdated2.meal
+                        let prettylocation = locprint rUpdated2.location
+                        sprintf "For %s on %s, we recommend %s from the %s category at %s." prettymeal prettyday item rUpdated2.category prettylocation
+
+            elif (validateDayMealLocation r) then
+                if (r.category = "any") then 
+                    let cat = generateCategory r
+                    let rUpdated = updateCategory cat r
+                    
+                    if (rUpdated.item <> "any") then
+                        sprintf "Item cannot be specified if category is not specified."
+                    else
+                        let item = generateItem rUpdated
+                        let prettyday = dayprint r.day
+                        let prettymeal = mealprint r.meal
+                        let prettylocation = locprint r.location
+                        sprintf "For %s at %s on %s, we recommend %s from the %s category." prettymeal prettylocation prettyday item rUpdated.category
+                elif (validateCategory r) then
+                    if (r.item = "any") then
+                        let item = generateItem r
+                        let prettyday = dayprint r.day
+                        let prettymeal = mealprint r.meal
+                        let prettylocation = locprint r.location
+                        sprintf "For %s at %s on %s from the %s category, we recommend %s." prettymeal prettylocation prettyday r.category item
+                    elif (validateItem r) then
+                        let prettyday = dayprint r.day
+                        let prettymeal = mealprint r.meal
+                        let prettylocation = locprint r.location
+                        sprintf "%s from the %s category for %s at %s on %s is a great choice!" r.item r.category prettymeal prettylocation prettyday
+                    else 
+                        sprintf "Given item is not in given category."
                 else 
-                    sprintf "Given item is not in given category."
-            else 
-                sprintf "Given category does not exist for given meal for given location."
-        else
-            sprintf "Given location is not open for given day or meal."
-    else 
-        sprintf "No locations are open for given day and meal combination."
+                    sprintf "Given category does not exist for given meal for given location."
+            else
+                sprintf "Given location is not open for given day or meal."
+        else 
+            sprintf "No locations are open for given day and meal combination."
 let rec eval(rs: Request) : string =
     match rs with
     | [] ->

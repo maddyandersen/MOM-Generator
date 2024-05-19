@@ -22,13 +22,17 @@ type Location =
 | Grill
 | AnyLoc
 
+type isGlutenFree =
+| True
+| False
+
 type Order = {
     day: Day; 
     meal: Meal; 
     location: Location; 
     category: string; 
     item: string;
-    isGlutenFree: bool;
+    isGlutenFree: isGlutenFree;
 }
 
 type Request = Order list
