@@ -78,20 +78,25 @@ let createParserFromFile (filePath : string) =
 let category = createParserFromFile("../locations/all/all_categories.txt") 
 
 let items = createParserFromFile("../locations/all/all_items.txt")
+
 let order =
     pseq
         (pseq
             (pseq
                 (pseq
-                    (pleft day pwsc)
-                    (pleft meal pwsc)
-                    (fun (d, m) -> (d, m)))
-                (pleft location pwsc)
-                (fun ((d, m), l) -> (d, m, l)))
-            (pleft category pwsc)
-            (fun ((d, m, l), c) -> (d, m, l, c)))
-        items
-        (fun ((d, m, l, c), i) -> {day = d; meal = m; location = l; category = c; item = i})
+                    (pseq
+                        (pleft day pwsc)
+                        (pleft meal pwsc)
+                        (fun (d, m) -> (d, m)))
+                    (pleft location pwsc)
+                    (fun ((d, m), l) -> (d, m, l)))
+                (pleft category pwsc)
+                (fun ((d, m, l), c) -> (d, m, l, c)))
+            (pleft items pws0)
+            (fun ((d, m, l, c), i) -> (d, m, l, c, i)))
+        (opt (pstr "gluten free") |>> Option.isSome)
+        (fun ((d, m, l, c, i), gf) -> {day = d; meal = m; location = l; category = c; item = i; isGlutenFree = gf})
+
 
 let request = pmany1 (pad order)
   

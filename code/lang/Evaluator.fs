@@ -121,7 +121,7 @@ let dayMealLocationConstraints = loadDayMealLocationConstraintsFromFile("../cons
 let validateDayMealLocation(order: Order) : bool =
     List.exists (fun (loc, day, meal) -> loc = order.location && day = order.day && meal = order.meal) dayMealLocationConstraints
 
-let getCategories(o: Order) =
+let getCategories(o: Order) : string list =
     let filePath = 
         "../locations/" + 
         filePathHelperLocation(o.location) + "/" + 
@@ -129,9 +129,12 @@ let getCategories(o: Order) =
         filePathHelperMeal(o.meal) + "/" + 
         filePathHelperMeal(o.meal) + "_categories.txt"
     let categories = File.ReadAllLines(filePath) |> List.ofArray
-    categories
+    if o.isGlutenFree then
+        List.filter (fun c -> c.Contains("gf")) categories
+    else
+        categories
 
-let getItems(o: Order) =
+let getItems(o: Order) : string list =
     let filePath = 
         "../locations/" + 
         filePathHelperLocation(o.location) + "/" + 
@@ -139,7 +142,10 @@ let getItems(o: Order) =
         filePathHelperMeal(o.meal) + "/" + 
         filePathHelperMeal(o.meal) + "_items/" + filePathHelperCategory(o.category) + ".txt"
     let items = File.ReadAllLines(filePath) |> List.ofArray
-    items
+    if o.isGlutenFree then
+        List.filter (fun i -> i.Contains("gf")) items
+    else
+        items
 
 let validateCategory(o: Order) : bool =
     let categories = getCategories(o)

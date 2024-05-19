@@ -27,7 +27,8 @@ type Order = {
     meal: Meal; 
     location: Location; 
     category: string; 
-    item: string
+    item: string;
+    isGlutenFree: bool;
 }
 
 type Request = Order list
