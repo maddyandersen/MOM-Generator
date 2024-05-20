@@ -4,6 +4,8 @@ open AST
 open System
 open System.IO
 
+let random = new Random()
+
 let dayprint(d: Day) : string =
     match d with
     | Monday -> "Monday"
@@ -130,7 +132,7 @@ let getCategories(o: Order) : string list =
         filePathHelperMeal(o.meal) + "_categories.txt"
     let categories = File.ReadAllLines(filePath) |> List.ofArray
     if o.isGlutenFree = True then
-        List.filter (fun c -> c.Contains("GF")) categories
+        List.filter (fun c -> c.Contains("gf")) categories
     else
         categories
 
@@ -142,10 +144,7 @@ let getItems(o: Order) : string list =
         filePathHelperMeal(o.meal) + "/" + 
         filePathHelperMeal(o.meal) + "_items/" + filePathHelperCategory(o.category) + ".txt"
     let items = File.ReadAllLines(filePath) |> List.ofArray
-    if o.isGlutenFree = True then
-        List.filter (fun i -> i.Contains("GF")) items
-    else
-        items
+    items
 
 let validateCategory(o: Order) : bool =
     let categories = getCategories(o)
@@ -156,7 +155,6 @@ let validateItem(o: Order) : bool =
     List.exists (fun item -> item = o.item) items
 
 let rec generateLocation(o : Order) =
-    let random = new Random()
     let filePath = "../locations/all/all_locations.txt"
     let locations = File.ReadAllLines(filePath) |> List.ofArray
     let index = random.Next(0, List.length locations)
@@ -174,14 +172,12 @@ let rec generateLocation(o : Order) =
     | false -> generateLocation(oUpdated)
 
 let generateCategory(o: Order) =
-    let random = new Random()
     let categories = getCategories(o)
     let index = random.Next(0, List.length categories)
     let category = List.item index categories
     category
 
 let generateItem(o : Order) = 
-    let random = new Random()
     let items = getItems(o)
     let index = random.Next(0, List.length items)
     let item = List.item index items
@@ -189,16 +185,21 @@ let generateItem(o : Order) =
     
 let updateCategory newCategory order = { order with category = newCategory }
 
-let validateGlutenFree(o: Order) : bool =
-    match o.isGlutenFree with
-    | True -> true
-    | False -> true
-    | _ -> failwith "not a valid input"
+let capitalizeWord (word: string) =
+    if String.IsNullOrWhiteSpace(word) then
+        word
+    else
+        let firstChar = word[0].ToString().ToUpper()
+        let rest = word.Substring(1)
+        firstChar + rest
+
+let capitalizeEachWord (input: string) =
+    input.Split([|' '|])
+    |> Array.map capitalizeWord
+    |> String.concat " "
 
 let evalHelper(r: Order) =
-    if not (validateGlutenFree r) then
-            sprintf "Please specify gluten free or type nothing."
-    elif (validateDayMeal r) then
+    if (validateDayMeal r) then
             if (r.location = AnyLoc) then 
                 let rUpdated = generateLocation r
                 
@@ -215,7 +216,9 @@ let evalHelper(r: Order) =
                         let prettyday = dayprint rUpdated2.day
                         let prettymeal = mealprint rUpdated2.meal
                         let prettylocation = locprint rUpdated2.location
-                        sprintf "For %s on %s, we recommend %s from the %s category at %s." prettymeal prettyday item rUpdated2.category prettylocation
+                        let prettycategory = capitalizeEachWord(rUpdated2.category)
+                        let prettyitem = capitalizeEachWord(item)
+                        sprintf "For %s on %s, we recommend the %s from the %s category at %s." prettymeal prettyday prettyitem prettycategory prettylocation
 
             elif (validateDayMealLocation r) then
                 if (r.category = "any") then 
@@ -229,19 +232,25 @@ let evalHelper(r: Order) =
                         let prettyday = dayprint r.day
                         let prettymeal = mealprint r.meal
                         let prettylocation = locprint r.location
-                        sprintf "For %s at %s on %s, we recommend %s from the %s category." prettymeal prettylocation prettyday item rUpdated.category
+                        let prettycategory = capitalizeEachWord(rUpdated.category)
+                        let prettyitem = capitalizeEachWord(item)
+                        sprintf "For %s at %s on %s, we recommend the %s from the %s category." prettymeal prettylocation prettyday prettyitem prettycategory
                 elif (validateCategory r) then
                     if (r.item = "any") then
                         let item = generateItem r
                         let prettyday = dayprint r.day
                         let prettymeal = mealprint r.meal
                         let prettylocation = locprint r.location
-                        sprintf "For %s at %s on %s from the %s category, we recommend %s." prettymeal prettylocation prettyday r.category item
+                        let prettycategory = capitalizeEachWord(r.category)
+                        let prettyitem = capitalizeEachWord(item)
+                        sprintf "For %s at %s on %s from the %s category, we recommend the %s." prettymeal prettylocation prettyday prettycategory prettyitem
                     elif (validateItem r) then
                         let prettyday = dayprint r.day
                         let prettymeal = mealprint r.meal
                         let prettylocation = locprint r.location
-                        sprintf "%s from the %s category for %s at %s on %s is a great choice!" r.item r.category prettymeal prettylocation prettyday
+                        let prettycategory = capitalizeEachWord(r.category)
+                        let prettyitem = capitalizeEachWord(r.item)
+                        sprintf "The %s from the %s category for %s at %s on %s is a great choice!" prettyitem prettycategory prettymeal prettylocation prettyday
                     else 
                         sprintf "Given item is not in given category."
                 else 

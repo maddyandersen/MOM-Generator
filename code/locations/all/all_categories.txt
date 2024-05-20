@@ -3,14 +3,14 @@ breakfast sandwiches
 burgers
 hot sandwiches
 breakfast sandwiches
-GF burgers
-GF hot sandwiches
+gf burgers
+gf hot sandwiches
 salads
 parfait
 specials
 build your own
 protein rich
-GF
+gf
 create your own
 wings
 any

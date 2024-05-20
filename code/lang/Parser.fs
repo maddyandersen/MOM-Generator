@@ -63,6 +63,10 @@ let location =
     (pstr "82 grill" |>> (fun _ -> Grill)) <|>
     (pstr "any" |>> (fun _ -> AnyLoc))   
 
+let glutenFree =
+    (pstr ", gluten free" |>> (fun _ -> True)) <|>
+    (pstr "" |>> (fun _ -> False))
+
 // read lines from file
 // create parser for each line
 // fold all parsers together
