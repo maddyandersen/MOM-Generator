@@ -31,6 +31,11 @@ let locprint(l: Location) : string =
     | Grill -> "82 Grill"
     | AnyLoc -> "Any Location"
 
+let gfBool(o: Order) =
+    match o.isGlutenFree with
+    | True -> true
+    | False -> false
+
 let filePathHelperMeal(m: Meal) : string = 
     match m with
     | Breakfast -> "breakfast"
@@ -188,6 +193,8 @@ let updateCategory newCategory order = { order with category = newCategory }
 let capitalizeWord (word: string) =
     if String.IsNullOrWhiteSpace(word) then
         word
+    elif (word = "gf") then
+        "Gluten-Free"
     else
         let firstChar = word[0].ToString().ToUpper()
         let rest = word.Substring(1)
@@ -198,8 +205,11 @@ let capitalizeEachWord (input: string) =
     |> Array.map capitalizeWord
     |> String.concat " "
 
+
 let evalHelper(r: Order) =
-    if (validateDayMeal r) then
+    if gfBool(r) && (r.category <> "gf" && r.category <> "any") then
+        sprintf "Given category does not contain gluten-free items."
+    elif (validateDayMeal r) then
             if (r.location = AnyLoc) then 
                 let rUpdated = generateLocation r
                 
