@@ -134,7 +134,7 @@ let getCategories(o: Order) : string list =
     if o.isGlutenFree = True then
         List.filter (fun c -> c.Contains("gf")) categories
     else
-        categories
+        List.filter (fun c ->  not (c.Contains("gf"))) categories
 
 let getItems(o: Order) : string list =
     let filePath = 
