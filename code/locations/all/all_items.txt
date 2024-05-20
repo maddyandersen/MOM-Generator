@@ -3,8 +3,6 @@ pasta bowl
 mac & cheese bowl
 nachos
 toasted sandwich
-brick oven pizza: GF
-pasta bowl: GF
 pickle pizza
 asian style sesame wings
 garlic parmesan wings
@@ -14,28 +12,21 @@ deli sandwich
 salad
 grain bowl
 kosher sandwich
-deli sandwich: GF
-salad: GF
-grain bowl: GF
 grain bowl: PR
 salad: PR
 rise & shine
-cyo omelet
+create your own omelet
 yogurt & fresh berry parfait
 bagel supreme
 mcWilliams
 sausage egg & cheese biscuit
-burgers
+burger
 garden salad
 grilled chicken salad
 crispy chicken salad
-burgers: GF
-grilled chicken breast: GF
-tuna melt: GF
-grilled cheese: GF
-tuna melt
-grilled cheese
 grilled chicken breast
+grilled cheese
+tuna melt
 fried chicken
 blt club
 chicken snack wrap

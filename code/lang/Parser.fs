@@ -63,7 +63,7 @@ let location =
     (pstr "any" |>> (fun _ -> AnyLoc))   
 
 let glutenFree =
-    (pstr ", gluten free" |>> (fun _ -> True)) <|>
+    (pstr ", gluten-free" |>> (fun _ -> True)) <|>
     (pstr "" |>> (fun _ -> False))
 
 // read lines from file

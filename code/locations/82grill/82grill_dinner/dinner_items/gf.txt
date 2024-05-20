@@ -1,2 +1,3 @@
-brick oven pizza: GF
-pasta bowl: GF
+brick oven pizza
+pasta bowl
+nachos
