@@ -34,9 +34,7 @@ Breakfast from Lee:
 Lunch, Midday, and Dinner from Lee:
 • breakfast sandwiches: bagel supreme, mcwilliams, sausage egg & cheese biscuit
 • burgers: burger
-• gf: yogurt & fresh berry parfait, garden salad, grilled chicken salad
-• gf burger: burger
-• gf hot sandwiches: grilled chicken breast, tuna melt, grilled cheese
+• gf: yogurt & fresh berry parfait, garden salad, grilled chicken salad, burger, grilled chicken breast, tuna melt, grilled cheese
 • hot sandwiches: tuna melt, grilled cheese, grilled chicken breast, fried chicken, blt club, chicken snack wrap
 • parfait: yogurt & fresh berry parfait
 • salads: garden salad, grilled chicken salad, crispy chicken salad

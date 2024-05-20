@@ -1,8 +1,6 @@
 burgers
 hot sandwiches
 breakfast sandwiches
-gf burgers
-gf hot sandwiches
 salads
 parfait
 specials
