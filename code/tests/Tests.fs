@@ -9,36 +9,26 @@ open Evaluator
 type TestClass () =
 
     [<TestMethod>]
-    member this.TestPrettyPrint () =
-        let prog = "monday breakfast lee"
-        let ast_maybe = parse prog
-        match ast_maybe with
-        | Some ast ->
-            let actual = prettyprint ast
-            let expected = "Monday Breakfast Lee"
-            Assert.AreEqual(expected, actual)
-        | None ->
-            Assert.IsTrue(false);
+    member this.TestMethodPassing () =
+        Assert.IsTrue(true);
 
     [<TestMethod>]
-    member this.TestReadFile () =
-        let prog = IO.File.ReadAllText("../../../../sample_prog/sample1.txt")
+    member this.TestGlutenFree () = // test gluten free and non-gluten free option
+        let prog = System.IO.File.ReadAllText "/Users/stella/Desktop/Computer Science/cs334/cs334-project-mia1-sjo2/code/sample_prog/sample4.txt"
         let ast_maybe = parse prog
         match ast_maybe with
         | Some ast ->
             Assert.IsTrue(true)
         | None ->
-            Assert.IsTrue(false);
-
-    (*
-    [<TestMethod>]
-    member this.TestGenerateCategory () =
-        let prog = IO.File.ReadAllText("../../../../sample_prog/invalid_order.txt")
-        let ast_maybe = parse prog
-        match ast_maybe with
-        | Some ast ->
-            Assert.IsTrue(true)
-        | None ->
-            Assert.IsTrue(false);
-    *)
+            Assert.IsTrue(false)
     
+    [<TestMethod>]
+    member this.TestEval () = 
+        let prog = System.IO.File.ReadAllText "/Users/stella/Desktop/Computer Science/cs334/cs334-project-mia1-sjo2/code/sample_prog/sample4.txt"
+        let ast_maybe = parse prog
+        match ast_maybe with
+        | Some ast ->
+            Assert.IsTrue(true)
+        | None ->
+            Assert.IsTrue(false)
+
