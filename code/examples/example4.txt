@@ -1,0 +1,5 @@
+saturday, lunch, any, any, any
+monday, breakfast, 82 grill, any, any
+thursday, dinner, 82 grill, breakfast sandwiches, any
+tuesday, breakfast, lee, breakfast entrees, bagel supreme
+wednesday, late night, 82 grill, create your own, any, gluten-free

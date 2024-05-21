@@ -5,34 +5,6 @@ open Combinator
 
 open System.IO
 
-(*
-<request>  ::= <order> | <order> '\n' <request>
-<order>    ::= <day>␣<meal>␣<location>␣<category>
-<day>      ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
-<meal>     ::= breakfast | lunch | mid day | dinner | late night
-<location> ::= lee | fng | grill | any
-<category> ::= 
-| <lee_breakfast_categories>
-| <lee_midday_categories> 
-    | <lee_lunch_categories> 
-    | <lee_dinner_categories> 
-    | <fng_lunch_categories> 
-    | <grill_lunch_categories>   
-    | <grill_dinner_categories> 
-    | <grill_latenight_categories>
-
-<lee_breakfast_categories> ::= breakfast entrees | breakfast sandwiches
-<lee_lunch_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
-<lee_midday_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
-<lee_dinner_categories> ::= burgers | hot sandwiches | breakfast sandwiches | GF burgers | GF hot sandwiches | salads | parfait | specials
-
-<fng_lunch_categories> ::= build your own | protein rich | GF
-
-<grill_lunch_categories> ::= create your own | GF| wings | specials
-<grill_dinner_categories> ::= create your own | GF | wings | specials
-<grill_latenight_categories> ::= create your own
-*)
-
 let pad p = pbetween pws0 p pws0
 
 let pwsc = 
@@ -67,9 +39,6 @@ let glutenFree =
     (pstr ", gluten-free" |>> (fun _ -> True)) <|>
     (pstr "" |>> (fun _ -> False))
 
-// read lines from file
-// create parser for each line
-// fold all parsers together
 let createParserFromFile (filePath : string) =
     let lines = File.ReadAllLines(filePath) |> List.ofArray
     match lines with
@@ -78,7 +47,6 @@ let createParserFromFile (filePath : string) =
         List.map (fun x -> pstr x) remainingLines 
         |> List.fold (fun acc p -> acc <|> p) (pstr firstLine)
    
-
 let category = createParserFromFile("../locations/all/all_categories.txt") 
 
 let items = createParserFromFile("../locations/all/all_items.txt")
@@ -100,7 +68,6 @@ let order =
             (fun ((d, m, l, c), i) -> (d, m, l, c, i)))
         (pleft glutenFree pws0)
         (fun ((d, m, l, c, i), gf) -> {day = d; meal = m; location = l; category = c; item = i; isGlutenFree = gf})
-
 
 let request = pmany1 (pad order)
   
