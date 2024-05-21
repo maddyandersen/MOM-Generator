@@ -51,137 +51,173 @@
 
 % DON'T CHANGE ANYTHING ABOVE HERE
 
-% Edit below as instructed
-
-\title{Mobile Order Meal Generator} % Replace SnappyLanguageName with your project's name
+\title{M.O.M. Generator}
 
 \author{Maddy Andersen \and Stella Oh}
 
 \begin{document}
-  
 \maketitle
 
+\begin{center}
+\href{https://drive.google.com/file/d/1etzXvG69ogoisz60TBy4X5-SLUC_DAOR/view?usp=sharing}{Video Presentation} 
+\end{center}
+
 \subsection*{Introduction}
-\textit{What problem does your language solve? What makes you think that this
-problem should have its own programming language?}
+
+While Williams has multiple dining halls, sometimes it can be more convenient to order from one of the three mobile ordering options instead: Lee Snack Bar, 82 Grill, or Fresh n Go. But with this added convenience comes a daunting question: what exactly should you order? Each of the three locations has an extensive menu, with various categories containing different items that can be further customized. Because there are so many choices, ordering can be overwhelming. As a result, many people — ourselves included — stick to ordering the same meals again and again. Even worse, some people don't mobile order at all and instead go to one of the dining halls, feeling that a mediocre meal is better than having to make the decision about what to mobile order.
 
 ~\\
-While Williams has multiple dining halls, sometimes it can be more convenient to instead order from one of the three mobile ordering options: Lee Snack Bar, '82 Grill, or Fresh n Go. But with this added convenience comes a daunting question: what exactly should you order? Each of the three has an extensive menu, with each of the options on the menu giving the opportunity for further customization. Because there are so many choices, ordering can be overwhelming. Many people — ourselves included — stick to ordering the same meals again and again as a result. Even worse, some people don't mobile order at all and instead go to one of the dining halls, feeling that a mediocre meal is better than having to make the decision about what to mobile order. 
-
-~\\
-In an effort to help out indecisive individuals and those experiencing decision fatigue, our language generates a possible mobile order, following given specifications from the user about what day of the week it is, as well as about what kind of meal they are looking for. Designed for students who are already familiar with the three menus, our language will help users mix up their order and find new options. It will also hopefully re-inspire students to mobile order their meals if they are unhappy with the dining hall options. Because our language is (ideally) easy to use, using our language to generate a meal will be less burdensome — and more fun! — for a user than determining what to order on their own.
+In an effort to help out indecisive individuals and those experiencing decision fatigue, our language generates a possible mobile order, following given specifications from the user about what day of the week it is, as well as about what kind of meal they are looking for. Designed for students who may or may not be familiar with mobile ordering, our language will help users mix up their order and find new options. It will also hopefully re-inspire students to mobile order their meals if they are unhappy with the dining hall options. Because our language is (ideally) easy to use, using our language to generate a meal will be less burdensome — and more fun! — for a user than determining what to order on their own.
 
 \subsection*{Design Principles}
-\textit{Languages can solve problems in many ways. What are the aesthetic or
-technical ideas that guide its design?}
-\\\\
-This language is designed with simplicity and convenience in mind. It is tailored for the typical Williams Eph, who is already familiar with the types of mobile ordering meals available (they know '82 Grill serves only lunch, dinner, and late-night, for example), but are looking to switch up what they order. Because this language is intended to be an alternative to the overwhelming task of deciding what to mobile order, it aims to be as straight-forward and stress-free as possible. 
+
+This language is designed with simplicity and ease in mind. It is suitable for those who are already familiar with the types of mobile ordering items available from each location, as well as those who do not have much experience mobile ordering. Because this language is intended to be an alternative to the overwhelming task of deciding what to mobile order, it aims to be as straight-forward and stress-free as possible. 
+
 
 \subsection*{Examples}
-\textit{Keeping in mind that your syntax is still informal, sketch out 3 or more sample programs in your language.}
+
+You'll find the following example programs in \textit{code/examples}. They may be run with
 
 \begin{verbatim}
-    tuesday lunch any
+    dotnet run ../examples/<example#.txt>
 \end{verbatim}
 
-\begin{verbatim}
-    friday dinner lee
-\end{verbatim}
+at the project level. The output (the M.O.M. Generator's suggestions) are printed to the terminal.
 
-\begin{verbatim}
-    monday dinner fresh n go
-    tuesday breakfast 82 grill
-    tuesday late night lee
-\end{verbatim}
+\begin{enumerate}
+    \item \textbf{example1.txt}
+    
+    In this example, the user has provided the day, meal, location, category, and item. The M.O.M. Generator simply outputs a complement about this order (as there is nothing to suggest).
 
-Currently, our interpreter prettyprints the input and generates a random meal category from the given location for the given meal for each order. If the input is invalid — for example, it is not possible to order dinner from lee —  our interpreter does not generate a random meal category and gives the user a message to submit a new request that is valid.
+    \begin{verbatim}
+    monday, breakfast, lee, breakfast sandwiches, bagel supreme
+    \end{verbatim}
+
+    The expected output is:
+    \\\\
+    The Bagel Supreme from the Breakfast Sandwiches category for Breakfast at Lee on Monday is a great choice!
+
+    \item \textbf{example2.txt}
+    
+    This example explores "any." The first order in the request asks for any item, the second asks for any category and any item, and the third asks for any location, any category, and any item. For the first order, the M.O.M. Generator suggests a random item from the given category from the given location for the meal on the day. For the second order, the M.O.M. Generator suggests a random item from a random category from the given location for the meal on the day. For the third order, the M.O.M. Generator suggests a random item from a random category from a random location for the meal on the day.
+
+    \begin{verbatim}
+    tuesday, lunch, fresh n go, build your own, any
+    wednesday, dinner, 82 grill, any, any
+    thursday, lunch, any, any, any
+    \end{verbatim}
+
+    A possible output is:
+    \\\\
+    For Lunch at Fresh n Go on Tuesday from the Build Your Own category, we recommend the Salad.
+    \\
+    For Dinner at 82 Grill on Wednesday, we recommend the Pasta Bowl from the Create Your Own category. 
+    \\
+    For Lunch on Thursday, we recommend the Blt Club from the Hot Sandwiches category at Lee.
+
+     \item \textbf{example3.txt}
+    
+    This example shows the optional gluten-free tag. The first order includes this tag, while the second does not. The M.O.M. Generator will suggest a gluten-free item for the first order and a non-gluten-free item for the second. 
+
+    \begin{verbatim}
+    friday, mid day, any, any, any, gluten-free
+    friday, mid day, any, any, any
+    \end{verbatim}
+
+    A possible output is:
+    \\\\
+    For Mid Day on Friday, we recommend the Grilled Chicken Salad from the Gluten-Free category at Lee.
+    \\
+    For Mid Day on Friday, we recommend the Sausage Egg \& Cheese Biscuit from the Breakfast Sandwiches category at Lee.
+
+     \item \textbf{example4.txt}
+    
+    This last example demonstrates the error messages the user can receive if their order is invalid. For the first order, none of the mobile ordering locations are open on the weekends for lunch. For the second, 82 Grill is not open for breakfast. For the third, breakfast sandwiches is a category for dinner at Lee, but not for dinner at 82 Grill. For the fourth, the bagel supreme is in the breakfast sandwiches category, not the breakfast entrees category. And finally, for the fifth, the create your own category for late night at 82 Grill does not contain any gluten-free items (instead, the gluten-free category does).
+
+    \begin{verbatim}
+    saturday, lunch, any, any, any
+    monday, breakfast, 82 grill, any, any
+    thursday, dinner, 82 grill, breakfast sandwiches, any
+    tuesday, breakfast, lee, breakfast entrees, bagel supreme
+    wednesday, late night, 82 grill, create your own, any, gluten-free
+    \end{verbatim}
+
+    The expected output is:
+    \\\\
+    No locations are open for given day and meal combination.
+    \\
+    Given location is not open for given day or meal.
+    \\
+    Given category does not exist for given meal for given location.
+    \\
+    Given item is not in given category.
+    \\
+    Given category does not contain gluten-free items.
+\end{enumerate}
 
 \subsection*{Language Concepts}
-\textit{What are the core concepts a user needs to understand in order to write
-programs? Think in terms of both “primitives” and “combining forms.” What are the key ideas and how are they combined?}
-\\\\
-The user will need to be familiar with the components that go into an order (combining form), which are the day of the week, the type of meal, and the location (primitives). To submit their request (which consists of one or more orders and is another combining form), the user will have to write their order(s) in a text-file, which they can then give to the language. The user will have to know the format of each order ($<$day$>$ $<$meal$>$ $<$location$>$) to submit a valid request. They will also have to know that each order should begin on a new line. Finally, a user needs to have some familiarity with the three mobile ordering options on campus, as well as a general sense of their menus, to be able to use this language easily.
+
+The user does not need to know much to successfully use our language. To be able to use it most easily, however, the user should have some familiarity with the three mobile ordering options on campus, as well as a general sense of their menus. To submit their request (which consists of one or more orders), the user will have to write their order(s) in a text-file, which they provide as input to the language. The user must know the components that go into an order, which are the day, the meal, the location, the category, and the item. The user will have to know the format of each order ($<$day$>$,$<$meal$>$,$<$location$>$,$<$category$>$,$<$item$>$) and the fact that each order must be on a new line. The user should also be aware of the optional gluten-free tag, especially if they interested in using it. To assist the user and to make our language as easy-to-use as possible, we provide the user with instructions when they run our language (dotnet run). These instructions have guidance on the syntax, as well as all of the possible values for each of the parts of the order.
 
 \subsection*{Formal Syntax}
-\textit{Begin to describe your syntax formally, using BNF.}
-\\\\
-The following grammar is for a mostly working version of our language.
+
+The complete BNF for programs written in our language. Any place there is white space, one or more white space characters are allowed.
 \begin{verbatim}
     <request>  ::= <order> | <order> '\n' <request>
-    <order>    ::= <day>␣<meal>␣<location>␣<category>
-    <day>      ::= monday | tuesday | wednesday | thursday | friday | saturday | sunday
-    <meal>     ::= breakfast | lunch | mid day | dinner | late night
-    <location> ::= lee | fng | 82grill | any
-    <category> ::= 
-        | <lee_breakfast_categories>
-        | <lee_midday_categories> 
-        | <lee_lunch_categories> 
-        | <lee_dinner_categories> 
-        | <fng_lunch_categories> 
-        | <82grill_lunch_categories>   
-        | <82grill_dinner_categories> 
-        | <82grill_latenight_categories>
+    <order>    ::= <day>, <meal>, <location>, <category>, <item>, <isGlutenFree>
+    <day>      ::= Monday | Tuesday | Wednesday | Thursday | Friday | 
+                   Saturday | Sunday
+    <meal>     ::= Breakfast | Lunch | MidDay | Dinner | LateNight
+    <location> ::= Lee | FnG | Grill | AnyLoc
+    <category> ::= "breakfast entrees" | "breakfast sandwiches" | "burgers" |
+                    "hot sandwiches" | "breakfast sandwiches" | "salads" |
+                    "parfait" | "specials" | "build your own" | "protein rich" |
+                    "gf" | "create your own" | "wings" | "any"
+    <item>     ::== "brick oven pizza" | "pasta bowl" | "mac & cheese bowl" |
+                    "nachos" | "toasted sandwich" | "pickle pizza" | "asian
+                    style sesame wings" | "garlic parmesan wings" | "buffalo
+                    hot wings" | "plain wings" | "deli sandwich" | "salad" |
+                    "grain bowl" | "kosher sandwich" | "grain bowl: PR" |
+                    "salad: PR" | "rise & shine" | "create your own omelet" |
+                    "yogurt & fresh berry parfait" | "bagel supreme" |
+                    "mcwilliams" | "sausage egg & cheese biscuit" | "burger" |
+                    "garden salad" | "grilled chicken salad" | "crispy chicken
+                    salad" | "grilled chicken breast" | "grilled cheese" |
+                    "tuna melt" | "fried chicken" | "blt club" | "chicken snack
+                    wrap" | "deluxe disco fries" | "spinach caprese grilled
+                    cheese" | "any"
+    <isGlutenFree> ::= True | False
 
-    <lee_breakfast_categories> ::= breakfast entrees | breakfast sandwiches
-    <lee_lunch_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
-        GF burgers | GF hot sandwiches | salads | parfait | specials
-    <lee_midday_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
-        GF burgers | GF hot sandwiches | salads | parfait | specials
-    <lee_dinner_categories> ::= burgers | hot sandwiches | breakfast sandwiches |
-        GF burgers | GF hot sandwiches | salads | parfait | specials
-    
-    <fng_lunch_categories> ::= build your own | protein rich | GF
-
-    <82grill_lunch_categories> ::= create your own | GF | wings | specials
-    <82grill_dinner_categories> ::= create your own | GF | wings | specials
-    <82grill_latenight_categories> ::= create your own
- 
 \end{verbatim}
 
 \subsection*{Semantics}
-\textit{How is your program interpreted? This need not be formal yet, however, you should demonstrate that you've thought about how your program will be represented and evaluated on a computer.}
-
-\begin{enumerate}
-  \item What are the primitive kinds of values in your system? For example, a primitive might be a number, a string, a shape, or a sound. Every primitive should be an idea that a user can explicitly state in a program written in your language. \\
-
-    In our language, the primitive values are the day of the week, meal, and location. The day can be one of seven options: monday, tuesday, wednesday, thursday, friday, saturday, or sunday. The meal can be one of five options: breakfast, lunch, mid day, dinner, or late night. The location can be one of four options: lee, fresh n go, 82 grill, or any location.
-    
-  \item What are the combining forms in your language? In other words, how are values combined in a program? For example, your system might combine primitive “numbers” using an operation like “plus.” Or perhaps a user can arrange primitive “notes” within a “sequence.” \\
-
-    Our language has two combining forms. The first is an order, which is composed of a day, meal, and a location. For example, 
-    \begin{verbatim}
-        monday breakfast lee
-    \end{verbatim}
-    is an order. The second is a request, which consists of one or more orders. So,
-    \begin{verbatim}
-        monday breakfast lee
-    \end{verbatim}
-    is thus also a request, while
-     \begin{verbatim}
-       monday breakfast lee
-       friday late night 82 grill
-     \end{verbatim}
-    is a request too. 
-            
-  \item How is your program evaluated? In particular, 
-  
-  \begin{enumerate}
-      \item Do programs in your language read any input?
-      \item What is the effect (output) of evaluating a program? Does the language produce a file or print something to the screen? Use one of your example programs to illustrate what you expect as output.
-  \end{enumerate}
-
-  Our program reads in a text file containing the user's request (one or more orders). If the user does not provide a file, the program prints a usage message. If the file does not contain a valid request, the program prints "Invalid program." Otherwise — if the user provides a file with a valid request — our language currently prettyprints the input and generates a random category from the given location for the given meal for each order in the request. In the future, evaluating a program will output a random order (from that category) that takes into account the user's specifications. 
-\end{enumerate}
 
 \begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{6cm}| }
  \hline
  Syntax & Abstract Syntax & Prec./Assoc. & Meaning\\
  \hline
- $<$meal$>$   & Discriminated Union & n/a & \textit{meal} is a primitive that represents a specific meal of the day (breakfast, lunch, mid day, dinner, late night). To prettyprint a meal, the given meal is turned into a string.\\
+ $<$request$>$ & List & n/a & \textit{request} is a combining form and is a list of one or more \textit{order}s. This allows the user to have multiple \textit{order}s within one request.\\
  \hline
- $<$order$>$ & Record & n/a & \textit{order} is a combining form. It has three elements: the day (of type \textit{day}), the meal (of type \textit{meal}), and the location (of type \textit{location}). This allows us to store all three of these pieces of information together. \\
+  $<$order$>$ & Record & n/a & \textit{order} is a combining form. It has fives parts: the day (of type \textit{day}), the meal (of type \textit{meal}), the location (of type \textit{location}), the category (a string), and the item (another string). This allows us to store all of these pieces of information together. \\
  \hline
+ $<$day$>$ & Discriminated Union & n/a & \textit{day} is a primitive that represents all of the days the user can order from (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday). To prettyprint the day to the terminal, day is turned into a string. \\
+ \hline
+ $<$meal$>$   & Discriminated Union & n/a & \textit{meal} is a primitive that represents a specific meal of the day (Breakfast, Lunch, Midday, Dinner, Late Night). To prettyprint a meal to the terminal, the given meal is turned into a string.\\
+ \hline
+ $<$location$>$ & Discriminated Union & n/a & \textit{location} is a primitive that represents all of the locations the user can order from: Lee, Fresh n Go, 82 Grill, or any location. When the location is any, the M.O.M. Generators randomly selects one of the three locations.\\
+ \hline
+ $<$category$>$ & String & n/a & \textit{category} represents the category from a location. Each location has a .txt file of all the different categories they have for different mealtimes.\\
+ \hline
+ $<$item$>$ & String & n/a & \textit{item} represents the item within a category of a location. Each location has a .txt file of all items falling under each category for different mealtimes.\\
+ \hline
+ $<$isGlutenFree$>$ & Discriminated Union & n/a & \textit{isGlutenFree} is a primitive that represents whether or not the order is gluten-free (True, False). If \textit{isGlutenFree} is true, then the order generated will be gluten-free. If \textit{isGlutenFree} is false, then the order generated will be not gluten-free. By default, \textit{isGlutenFree} is false. \textit{isGlutenFree} is never printed directly to the terminal.\\
+ \hline
+ 
 \end{tabular}
+
+\subsection*{Remaining Work}
+
+While we are happy with the current implementation of the M.O.M. Generator, there are a couple of additional features we hope to implement in the future. The first is ingredient customization. Currently, the M.O.M. Generator makes suggestions up to the item level, but if you've ever mobile ordered, you know there is the option to customize the ingredients within a given item. We'd like the M.O.M. Generator to not only be able to suggest items, but also suggest ingredients. Included in this, users would be able to request that certain ingredients be included or left out from their order. Additionally, we would love to create a webpage or some other type of user interface for the M.O.M. Generator to boost the user experience. Finally, integrating our language into WSO would be a fantastic way of extending the reach of the M.O.M. Generator, allowing it to become a helpful language for the Williams community.
 
 % DO NOT DELETE ANYTHING BELOW THIS LINE
 \end{document}
