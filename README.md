@@ -3,7 +3,7 @@
 The **M.O.M. Generator** is a domain-specific language that helps students at Williams College decide what to order from campus mobile ordering options: Lee Snack Bar, 82 Grill, or Fresh n Go. 
 Users provide input specifying the day, meal, location, category, and item preferences, and the system outputs personalized meal suggestions, optionally considering gluten-free options.
 
-The generator was develiped as the final project for CS 334: Principles of Programming Languages. It was built by Maddy Andersen and Stella Oh.
+The generator was develiped as the final project for CS 334: Principles of Programming Languages at Williams. It was built by Maddy Andersen and Stella Oh.
 
 ---
 
