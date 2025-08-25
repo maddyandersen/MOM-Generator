@@ -53,6 +53,6 @@ The output is printed to the terminal with suggested meals for each order.
 
 ## Language Specification
 
-For the full specification, including formal syntax, semantics, and design principles, please refer to the [**M.O.M. Generator Specification**](https://drive.google.com/file/d/1etzXvG69ogoisz60TBy4X5-SLUC_DAOR/view?usp=sharing).
+For the full specification, including formal syntax, semantics, and design principles, please refer to the [**M.O.M. Generator Specification**](https://github.com/maddyandersen/MOM-Generator/blob/main/docs/specification.pdf).
 
 
